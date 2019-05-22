@@ -6,6 +6,7 @@ const port = process.env.PORT || 3000
 
 app.use(cors())
 
+const ContaBancariaFuncionarioRoute = require('./app/routes/conta_bancaria_funcionario')
 const PessoaRoute = require('./app/routes/pessoa')
 const FamiliarRoute = require('./app/routes/familiar')
 const ResidenteRoute = require('./app/routes/residente')
@@ -127,6 +128,9 @@ app.use('/', ConvenioRoute)
 
 //API TELEFONE_CONVENIO
 app.use('/', TelefoneConvenioRoute)
+~
+//API CONTA_BANCARIA_FUNCIONARIO
+app.use('/', ContaBancariaFuncionarioRoute)
 
 //API ENDERECO_CONVENIO
 app.use('/', EnderecoConvenioRoute)
