@@ -9,9 +9,10 @@
  */
 const sequelize = require('./../../database/sequelize_remote')
 
-const { FuncionarioModel, PessoaModel, UsuarioModel, AcompanhamentoFuncionarioModel } = require('./../models')
+const { FuncionarioModel, PessoaModel, UsuarioModel, AcompanhamentoFuncionarioModel,ContaBancariaFuncionarioModel } = require('./../models')
 
 FuncionarioModel.belongsTo(PessoaModel, { as: 'PESSOA', foreignKey: 'PESSOA_CODIGO' })
+FuncionarioModel.belongsTo(ContaBancariaFuncionarioModel, { as: 'CONTA', foreignKey: 'CODIGO_FUNCIONARIO' })
 FuncionarioModel.belongsTo(UsuarioModel, { as: 'USUARIO', foreignKey: 'CODIGO_FUNCIONARIO' })
 FuncionarioModel.belongsTo(AcompanhamentoFuncionarioModel, { as: 'ACOMPANHAMENTO_FUNCIONARIO', foreignKey: 'CODIGO_FUNCIONARIO' })
 
@@ -48,7 +49,15 @@ class Funcionario {
     }
 
     getFuncionarioFull(req, res) {
-        sequelize.query(`SELECT P.CODIGO AS COD_PES, P.NOME, P.SOBRENOME, P.RG, P.CPF, P.SEXO, P.ESTADO_CIVIL, P.DATA_NASCIMENTO, P.RELIGIAO, P.ESCOLARIDADE, F.CODIGO_FUNCIONARIO AS COD_FUN, F.CARGO, F.DATA_ADMISSAO, T.CODIGO AS COD_TEL, T.DDD, T.NUMERO AS NUM_TEL, E.CODIGO AS COD_END, E.ENDERECO, E.NUMERO, E.BAIRRO, E.COMPLEMENTO, E.CIDADE, E.ESTADO, E.CEP, E.REFERENCIA FROM PESSOA AS P LEFT JOIN FUNCIONARIO AS F ON P.CODIGO = F.PESSOA_CODIGO LEFT JOIN TELEFONE_PESSOA AS TP ON P.CODIGO = TP.PESSOA_CODIGO LEFT JOIN TELEFONE AS T ON T.CODIGO = TP.TELEFONE_CODIGO LEFT JOIN ENDERECO_PESSOA AS EP ON P.CODIGO = EP.PESSOA_CODIGO LEFT JOIN ENDERECO AS E ON E.CODIGO = EP.ENDERECO_CODIGO WHERE F.CODIGO_FUNCIONARIO = ${req.params.id} `).then(result => res.json(result[0]))
+        sequelize.query(`SELECT P.CODIGO AS COD_PES, P.NOME, P.SOBRENOME, P.RG, P.CPF, P.SEXO, P.ESTADO_CIVIL, P.DATA_NASCIMENTO, P.RELIGIAO, P.ESCOLARIDADE, F.CODIGO_FUNCIONARIO AS COD_FUN, F.CARGO, F.DATA_ADMISSAO, T.CODIGO AS COD_TEL, T.DDD, T.NUMERO AS NUM_TEL, E.CODIGO AS COD_END, E.ENDERECO, E.NUMERO, E.BAIRRO, E.COMPLEMENTO, E.CIDADE, E.ESTADO, E.CEP, E.REFERENCIA, C.CONTA, C.AGENCIA, C.BANCO
+        FROM PESSOA AS P         
+        LEFT JOIN FUNCIONARIO AS F ON P.CODIGO = F.PESSOA_CODIGO
+        LEFT JOIN CONTA_BANCARIA_FUNCIONARIO AS C ON F.CODIGO_FUNCIONARIO = C.CODIGO_FUNCIONARIO
+        LEFT JOIN TELEFONE_PESSOA AS TP ON P.CODIGO = TP.PESSOA_CODIGO 
+        LEFT JOIN TELEFONE AS T ON T.CODIGO = TP.TELEFONE_CODIGO 
+        LEFT JOIN ENDERECO_PESSOA AS EP ON P.CODIGO = EP.PESSOA_CODIGO 
+        LEFT JOIN ENDERECO AS E ON E.CODIGO = EP.ENDERECO_CODIGO
+        WHERE F.CODIGO_FUNCIONARIO = ${req.params.id} `).then(result => res.json(result[0]))
     }
 
     getById(req, res) {
@@ -57,6 +66,7 @@ class Funcionario {
                 CODIGO_FUNCIONARIO: req.params.id
             },
             include: [
+                {model: ContaBancariaFuncionarioModel, as: 'CONTA'},
                 { model: PessoaModel, as: 'PESSOA' },
                 { model: UsuarioModel, as: 'USUARIO' }
             ]
