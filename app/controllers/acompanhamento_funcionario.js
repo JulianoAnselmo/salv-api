@@ -10,17 +10,18 @@ class AcompanhamentoFuncionario {
 
     getById(req, res) {
         sequelize.query(`SELECT
-                            A.CODIGO,
-                            P.NOME, P.SOBRENOME,
-                            F.CARGO
-                        FROM
-                            ACOMPANHAMENTO A
-                            LEFT JOIN ACOMPANHAMENTO_FUNCIONARIO AF
-                            ON AF.ACOMPANHAMENTO_CODIGO = A.CODIGO
-                            LEFT JOIN FUNCIONARIO F
-                            ON F.CODIGO_FUNCIONARIO = AF.CODIGO_FUNCIONARIO
-                            LEFT JOIN PESSOA P
-                            ON P.CODIGO = F.PESSOA_CODIGO
+        A.CODIGO,
+        P.NOME, P.SOBRENOME,F.CARGO
+        
+    FROM
+        ACOMPANHAMENTO A
+       
+        LEFT JOIN ACOMPANHAMENTO_FUNCIONARIO AF
+        ON AF.ACOMPANHAMENTO_CODIGO = A.CODIGO
+        LEFT JOIN FUNCIONARIO F
+        ON F.CODIGO_FUNCIONARIO = AF.CODIGO_FUNCIONARIO
+        LEFT JOIN PESSOA P
+        ON P.CODIGO = F.PESSOA_CODIGO
                             WHERE A.CODIGO = :ACOMPANHAMENTO_CODIGO`,
             { replacements: { ACOMPANHAMENTO_CODIGO: req.params.id } })
             .then(result => {

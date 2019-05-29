@@ -23,5 +23,15 @@ class ContaBancariaFuncionario {
             .then(conta => res.json(conta))
             .catch(error => res.json(error))
     }
+
+    update(req, res) {
+        ContaBancariaFuncionarioModel.update(req.body, {
+            where: {
+                CODIGO_FUNCIONARIO: req.params.id
+            }
+        })
+            .then(conta => res.json(conta))
+            .catch(error => res.json(error))
+    }
 }
 module.exports = new ContaBancariaFuncionario()

@@ -117,12 +117,13 @@ class Funcionario {
 
     getName(req, res) {
 
-        sequelize.query(`SELECT P.NOME AS FNOME, F.CODIGO_FUNCIONARIO
-                FROM
-                PESSOA AS P
-                INNER JOIN FUNCIONARIO AS F
-                ON P.CODIGO=F.PESSOA_CODIGO
-                WHERE F.STATUS = 1`
+        sequelize.query(`SELECT CONCAT(P.NOME,' - ',F.CARGO)  AS FNOME  , F.CODIGO_FUNCIONARIO
+        FROM
+        PESSOA AS P
+        INNER JOIN FUNCIONARIO AS F
+        ON P.CODIGO=F.PESSOA_CODIGO
+      
+        WHERE F.STATUS = 1`
 
         )
             .then(result => {

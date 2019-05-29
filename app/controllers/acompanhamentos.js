@@ -60,7 +60,7 @@ class Acompanhamento {
     }
 
     getFuncionarioByIdAc(req, res) {
-        sequelize.query(`SELECT F.CODIGO_FUNCIONARIO, P.NOME as FNOME, P.SOBRENOME FROM PESSOA AS P
+        sequelize.query(`SELECT F.CODIGO_FUNCIONARIO, F.CARGO, P.NOME as FNOME, P.SOBRENOME FROM PESSOA AS P
         INNER JOIN FUNCIONARIO AS F
         ON P.CODIGO = F.PESSOA_CODIGO
         INNER JOIN ACOMPANHAMENTO_FUNCIONARIO AS AF
